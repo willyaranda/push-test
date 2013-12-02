@@ -11,18 +11,18 @@
  */
 
 
-'use strict';
+ 'use strict';
 
 /**
  * Implementation of navigator.push
  * W3C spec: http://www.w3.org/TR/push-api/
  */
 
-function _Push() {
+ function _Push() {
 
-}
+ }
 
-_Push.prototype = {
+ _Push.prototype = {
   /////////////////////////////////////////////////////////////////////////
   // Push methods
   /////////////////////////////////////////////////////////////////////////
@@ -46,19 +46,19 @@ _Push.prototype = {
   },
 
   requestURL: function(watoken, certUrl) {
-    this.debug('[requestURL] Warning, DEPRECATED method. Use requestRemotePermission instead');
-    return this.requestRemotePermission(watoken, certUrl);
+    this.debug('[requestURL] Warning, DEPRECATED method. Use register instead');
+    return this.register(watoken, certUrl);
   },
 
   requestHello: function(_IN) {
     this.hello(_IN,false);
   },
 
-  requestRemotePermissionEx: function(watoken, certUrl) {
+  registerEx: function(watoken, certUrl) {
     var cb = {};
 
     if(!watoken || !certUrl) {
-      this.debug('[requestRemotePermission] Error, no WAToken nor certificate URL provided');
+      this.debug('[registerEx] Error, no WAToken nor certificate URL provided');
       setTimeout(function() {
         if(cb.onerror) cb.onerror('Error, no WAToken nor certificate URL provided');
       });
@@ -85,7 +85,7 @@ _Push.prototype = {
     return cb;
   },
 
-  requestRemotePermission: function(_IN) {
+  register: function(_IN) {
     var cb = {};
 
     this.setGlobals(_IN);
@@ -110,22 +110,22 @@ _Push.prototype = {
     return cb;
   },
 
-  requestRemotePermission_fake: function(_IN) {
+  register_fake: function(_IN) {
     var cb = {};
 
     this.setGlobals(_IN);
     this.openWebsocket_reg();
 
     this.sendWS({
-       channelID: "1234",
-       messageType: 'register'
-    });
+     channelID: "1234",
+     messageType: 'register'
+   });
 
     return cb;
   },
 
 
-  revokeRemotePermission: function(_IN) {
+  unregister: function(_IN) {
 
     this.setGlobals(_IN);
 
@@ -155,7 +155,7 @@ _Push.prototype = {
    *  "wakeup_mnc: 'MOBILE NETWORK CODE'
    * }
    */
-  setup: function(data) {
+   setup: function(data) {
     if(!data)
       return;
 
@@ -268,7 +268,7 @@ _Push.prototype = {
   /**
    * Current setup recovery
    */
-  getSetup: function() {
+   getSetup: function() {
     return {
       debug: this.DEBUG,
       host: this.server.host,
@@ -306,7 +306,7 @@ _Push.prototype = {
   /**
    * Set to defaults
    */
-  defaultconfig: function() {
+   defaultconfig: function() {
     this.server = {};
     this.wakeup = {};
     this.setup({
@@ -335,13 +335,13 @@ _Push.prototype = {
       ping: true,
       pong: false,
       other: false
-    })
+    });
   },
 
   /**
    * Initialize
    */
-  init: function() {
+   init: function() {
     if(this.initialized) {
       return;
     }
@@ -349,11 +349,11 @@ _Push.prototype = {
     this.debug('Initializing',this.server);
 
     this.server.ad_ws = 'ws'+(this.server.ssl == "true" || this.server.ssl ? 's' : '')+'://';
-	if(this.server.port) {
-		this.server.ad_ws += this.server.host + ':' + this.server.port;
-	} else {
-		this.server.ad_ws += this.server.host;
-	}
+    if(this.server.port) {
+      this.server.ad_ws += this.server.host + ':' + this.server.port;
+    } else {
+      this.server.ad_ws += this.server.host;
+    }
 
     this.server.ws = {
       connection: null,
@@ -372,7 +372,7 @@ _Push.prototype = {
   /**
    * Hello
    */
-  hello: function(_IN) {
+   hello: function(_IN) {
 
     this.setGlobals(_IN);
     this.openWebsocket();
@@ -410,7 +410,7 @@ _Push.prototype = {
   /**
    * Register UA
    */
-  registerUA: function(cb) {
+   registerUA: function(cb) {
     if(this.server.registeredUA) {
       if(cb) cb();
       return;
@@ -427,7 +427,7 @@ _Push.prototype = {
   /**
    * Register WA
    */
-  registerWA: function(cb) {
+   registerWA: function(cb) {
     this.onRegisterWAMessage = function(msg) {
       this.debug('[onRegisterWAMessage] ', msg);
 
@@ -446,7 +446,7 @@ _Push.prototype = {
   /**
    * Unregister WA
    */
-  unregisterWA: function(_IN) {
+   unregisterWA: function(_IN) {
 
     _IN = typeof _IN !== 'undefined' ? _IN : {whatever:true};
     this._channels = typeof _IN.channels !== 'undefined' ? _IN.channels : [];
@@ -461,13 +461,13 @@ _Push.prototype = {
   /**
    * Open Websocket connection
    */
-  openWebsocket: function() {
+   openWebsocket: function() {
     if (this.server.ws.ready)
       return;
 
     this.debug('[openWebsocket] Openning websocket to: ' + this.server.ad_ws);
     this.server.ws.connection =
-      new WebSocket(this.server.ad_ws, 'push-notification');
+    new WebSocket(this.server.ad_ws, 'push-notification');
 
     this.server.ws.connection.onopen = this.onOpenWebsocket.bind(this);
     this.server.ws.connection.onclose = this.onCloseWebsocket.bind(this);
@@ -478,13 +478,13 @@ _Push.prototype = {
   /**
    * Open Websocket connection special version with register operation instead of hello
    */
-  openWebsocket_reg: function() {
+   openWebsocket_reg: function() {
     if (this.server.ws.ready)
       return;
 
     this.debug('[openWebsocket] Openning websocket to ++++: ' + this.server.ad_ws);
     this.server.ws.connection =
-      new WebSocket(this.server.ad_ws, 'push-notification');
+    new WebSocket(this.server.ad_ws, 'push-notification');
 
     this.server.ws.connection.onopen = this.onOpenWebsocket_reg.bind(this);
     this.server.ws.connection.onclose = this.onCloseWebsocket.bind(this);
@@ -495,20 +495,20 @@ _Push.prototype = {
   /**
    * Close Websocket connection
    */
-  closeWebsocket: function() {
+   closeWebsocket: function() {
     if (!this.server.ws.ready)
       return;
 
     this.debug('[closeWebsocket] Closing websocket to ++++: ' + this.server.ad_ws);
-	if (this.server.ws.connection) {
-		this.server.ws.connection.close();
-	}
+    if (this.server.ws.connection) {
+      this.server.ws.connection.close();
+    }
   },
 
   /**
    * Send a Websocket message (object)
    */
-  sendWS: function(json) {
+   sendWS: function(json) {
     var msg = JSON.stringify(json);
     this.debug('[sendWS] Preparing to send: ' + msg);
     if (this.server.ws.ready)
@@ -519,7 +519,7 @@ _Push.prototype = {
    * Websocket callbacks
    */
 
-  onOpenWebsocket: function() {
+   onOpenWebsocket: function() {
     this.debug('[onOpenWebsocket] Opened connection to ' + this.server.host);
     this.server.ws.ready = true;
 
@@ -530,15 +530,15 @@ _Push.prototype = {
     if(this.server.keepalive > 0) {
       this.keepalivetimer = setInterval(function() {
         if (this.pong){
-		this.debug('[Websocket Keepalive] Sending keepalive message. {"hello"}');
-        	this.server.ws.connection.send('{"hello"}');
-	} else if (this.other) {
-		this.debug('[Websocket Keepalive] Sending keepalive message. {"verylongmessage"}');
-		this.server.ws.connection.send('{"' + this.very_long_message + '"}');
-	} else if (this.ping) {
-		this.debug('[Websocket Keepalive] Sending keepalive message. {}');
-		this.server.ws.connection.send('{}');
-	}
+          this.debug('[Websocket Keepalive] Sending keepalive message. {"hello"}');
+          this.server.ws.connection.send('{"hello"}');
+        } else if (this.other) {
+          this.debug('[Websocket Keepalive] Sending keepalive message. {"verylongmessage"}');
+          this.server.ws.connection.send('{"' + this.very_long_message + '"}');
+        } else if (this.ping) {
+          this.debug('[Websocket Keepalive] Sending keepalive message. {}');
+          this.server.ws.connection.send('{}');
+        }
       }.bind(this), this.server.keepalive);
     }
   },
@@ -549,7 +549,7 @@ _Push.prototype = {
 
     // We shall registerUA each new connection
     this.debug('[onOpenWebsocket] Started registration to the notification server +++++');
-    this.requestRemotePermission_fake(this._IN);
+    this.register_fake(this._IN);
   },
 
 
@@ -584,86 +584,78 @@ _Push.prototype = {
 
   manageWebSocketResponse: function(msg) {
     switch(msg.messageType) {
-      case 'hello':
-        this.server.registeredUA = true;
-	this.onHelloMessage(msg);
-        break;
+    case 'hello':
+      this.server.registeredUA = true;
+      this.onHelloMessage(msg);
+      break;
 
-      case 'register':
-        this.debug('[manageWebSocketResponse register] Registered channelID');
-	//this.onRegisterUAMessage(msg);
-        this.onRegisterWAMessage(msg);
-        break;
+    case 'register':
+      this.debug('[manageWebSocketResponse register] Registered channelID');
+      this.onRegisterWAMessage(msg);
+      break;
 
-      case 'notification':
-      case 'desktopNotification':
-        this.debug('[manageWebSocketResponse notification] Going to ack the message ', msg);
-        var event = new CustomEvent('pushmessage', {
-          "detail": { "message": JSON.stringify(msg.updates) }
+    case 'notification':
+    case 'desktopNotification':
+      this.debug('[manageWebSocketResponse notification] Going to ack the message ', msg);
+      var event = new CustomEvent('pushmessage', {
+        "detail": { "message": JSON.stringify(msg.updates) }
+      });
+      window.dispatchEvent(event);
+
+      if (this.ack_null_updates) {
+        this.debug('[sendWS]{"messageType": "ack", "updates": null}');
+        this.sendWS({
+          messageType: 'ack',
+          updates: null
         });
-        window.dispatchEvent(event);
-
-	if (this.ack_null_updates)
-	{
-		this.debug('[sendWS]{"messageType": "ack", "updates": null}');
-        	this.sendWS({
-          		messageType: 'ack',
-			updates: null
-        	});
-        	break;
-	} else if (this.ack_invalid_channelID)
-	{
-		this.debug('[sendWS]{"messageType": "ack", "updates": {"channelID": "", "version": 1}}');
-        	this.sendWS({
-          		messageType: 'ack',
-          		updates: { channelID: "", version: 1}
-        	});
-        	break;
-	} else if (this.ack_null_channelID)
-	{
-		this.debug('[sendWS]{"messageType": "ack", "updates": { "channelID": null, "version": 1}}');
-        	this.sendWS({
-          		messageType: 'ack',
-          		updates: { channelID: null, version: 1}
-        	});
-        	break;
-	} else if (this.ack_null_version)
-	{
-		this.debug('[sendWS]{"messageType": "ack", "updates": { "channelID": "1234", "version": null}}');
-        	this.sendWS({
-          		messageType: 'ack',
-          		updates: { channelID: "1234", version: null}
-        	});
-        	break;
-	} else if (this.ack_invalid_version)
-	{
-		this.debug('[sendWS]{"messageType": "ack", "updates": { "channelID": "1234", "version": ""}}');
-        	this.sendWS({
-          		messageType: 'ack',
-          		updates: { channelID: "1234", version: ""}
-        	});
-        	break;
-	}  else if (this.no_ack)
-	{
-		//We won't send nothing
-		this.debug('NO ACK');
-        	break;
-	} else
-	{
-		this.debug('[sendWS]{"messageType": "ack", "updates"', msg.updates);
-	      	this.sendWS({
-	       		messageType: 'ack',
-       			updates: msg.updates
-      		});
-       		break;
-	}
+        break;
+      } else if (this.ack_invalid_channelID) {
+        this.debug('[sendWS]{"messageType": "ack", "updates": {"channelID": "", "version": 1}}');
+        this.sendWS({
+          messageType: 'ack',
+          updates: { channelID: "", version: 1}
+        });
+        break;
+      } else if (this.ack_null_channelID) {
+        this.debug('[sendWS]{"messageType": "ack", "updates": { "channelID": null, "version": 1}}');
+        this.sendWS({
+          messageType: 'ack',
+          updates: { channelID: null, version: 1}
+        });
+        break;
+      } else if (this.ack_null_version) {
+        this.debug('[sendWS]{"messageType": "ack", "updates": { "channelID": "1234", "version": null}}');
+        this.sendWS({
+          messageType: 'ack',
+          updates: { channelID: "1234", version: null}
+        });
+        break;
+      } else if (this.ack_invalid_version) {
+        this.debug('[sendWS]{"messageType": "ack", "updates": { "channelID": "1234", "version": ""}}');
+        this.sendWS({
+          messageType: 'ack',
+          updates: { channelID: "1234", version: ""}
+        });
+        break;
+      } else if (this.no_ack) {
+        //We won't send nothing
+        this.debug('NO ACK');
+        break;
+      } else {
+        this.debug('[sendWS]{"messageType": "ack", "updates"', msg.updates);
+        this.sendWS({
+          messageType: 'ack',
+          updates: msg.updates
+        });
+        break;
+      }
     }
   },
 
   /**
    * Debug logger method
    */
-  debug: function(msg, obj) {
+   debug: function(msg, obj) {
     if(this.DEBUG) {
       var message = msg;
       if(obj) {
@@ -678,43 +670,36 @@ _Push.prototype = {
  * Autoinitialization and redefinition of navigator.push if needed
  */
 
-(function() {
+ (function() {
   // Enable/Disable DEBUG traces
   var DEBUG = true;
 
   /**
    * Debug logger method
    */
-  function debug(msg, obj) {
+   function debug(msg, obj) {
     if(DEBUG) {
       var message = msg;
       if(obj) {
         message += ': ' + JSON.stringify(obj);
       }
-      console.log('[PUSH (INIT) LIBRARY DEBUG] ' + message)
+      console.log('[PUSH (INIT) LIBRARY DEBUG] ' + message);
     }
   }
 
   /**
-   * Check navigator.[mozPushNotification|pushNotification] support and fallback if not supported
+   * Check navigator.push support and fallback if not supported
    */
-  function init() {
+   function init() {
     debug('Checking navigator.push existance');
-    if(navigator.pushNotification) {
-      debug('navigator.pushNotification supported by your browser');
+    if(navigator.push) {
+      debug('navigator.push supported by your browser');
       return;
     }
-    if(navigator.mozPushNotification) {
-      debug('navigator.mozPushNotification supported by your browser');
-      navigator.pushNotification = navigator.mozPushNotification;
-      debug('navigator.pushNotification = navigator.mozPushNotification');
-      return;
-    }
-    debug('No pushNotification supported by your browser. Falling back');
-    navigator.pushNotification = new _Push();
-    navigator.mozPushNotification = navigator.pushNotification;
-    navigator.pushNotification.defaultconfig();
-    navigator.pushNotification.init();
+    debug('No push supported by your browser. Falling back');
+    navigator.push = new _Push();
+    navigator.push.defaultconfig();
+    navigator.push.init();
   }
 
   init();

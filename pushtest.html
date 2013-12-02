@@ -14,7 +14,7 @@ and open the template in the editor.
     <h1>TEST PUSH SERVER</h1>
     <div id="mozAPI">
       <h2>hello tests</h2>
-      <button onclick="navigator.pushNotification.requestHello()">hello()</button>
+      <button onclick="navigator.push.requestHello()">hello()</button>
       <div id="uaid">(uaid will be shown here once you click on "register" (but wait 4 seconds before clicking on register)</div>
       <hr>
       <h2>register tests</h2>
@@ -23,11 +23,12 @@ and open the template in the editor.
       <br>
       <hr>
       <h2>unregister tests</h2>
-      <button onclick="navigator.pushNotification.revokeRemotePermission( { channels: '1234' })">unregister()</button>
+      <button onclick="navigator.push.unregister( { channels: '1234' })">unregister()</button>
       <hr>
       <h2>Send a notification to this app</h2>
       <input id="channelVersion" value="1" />
       <button onclick="updateVersion($('endpointURL').innerHTML,$('channelVersion').value)">updateVersion()</button>
+      <div id="updateversion-msg">(AS petition response will be put here)</div>
       <div id="asyncmsg">(message will shown here if everything is correct)</div>
     </div>
     <div id="extAPI">

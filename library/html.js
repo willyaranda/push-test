@@ -3,14 +3,14 @@ function $(id) {
 };
 
 function close_connection() {
-  var c = navigator.pushNotification.closeWebsocket();
+  var c = navigator.push.closeWebsocket();
 };
 
 function register(_IN,callback) {
-  var c = navigator.pushNotification.requestRemotePermission(_IN);
+  var c = navigator.push.register(_IN);
   c.onsuccess=function(url) {
     $('endpointURL').innerHTML = url;
-    $('uaid').innerHTML = navigator.pushNotification.token;
+    $('uaid').innerHTML = navigator.push.token;
     _IN.pushEndPointURL = url;
     if (callback)
       callback(url, 1);
@@ -21,7 +21,7 @@ function register(_IN,callback) {
 };
 
 function register_fake(_IN,callback) {
-  var c = navigator.pushNotification.requestRemotePermission_fake(_IN);
+  var c = navigator.push.register_fake(_IN);
   c.onsuccess=function(url) {
     $('endpointURL').innerHTML = url;
     _IN.pushEndPointURL = url;
@@ -36,10 +36,10 @@ function register_fake(_IN,callback) {
 function generateMQJSON() {
   t = $('queuedata');
   json = {
-    "uaid": navigator.pushNotification.token,
+    "uaid": navigator.push.token,
     "messageId": "abcd",
     "payload": {
-      "appToken": navigator.pushNotification.publicURLs[0],
+      "appToken": navigator.push.publicURLs[0],
       "channelID":"1234",
       "version": 1
     }
@@ -48,7 +48,7 @@ function generateMQJSON() {
 };
 
 function getSetup() {
-  c = navigator.pushNotification.getSetup();
+  c = navigator.push.getSetup();
   $('setup_debug').checked = (c.debug === "true" || c.debug ? true : false);
   $('setup_host').value = c.host;
   $('setup_port').value = c.port;
@@ -64,20 +64,24 @@ function getSetup() {
 };
 
 function changeSetup(param, value) {
-  navigator.pushNotification.setup(JSON.parse('{"'+param+'": "'+value+'"}'));
+  navigator.push.setup(JSON.parse('{"'+param+'": "'+value+'"}'));
   getSetup();
 };
 
 function updateVersion(URL,version) {
   var oReq = new XMLHttpRequest();
   oReq.onload = function() {
-    console.log(this.responseText);
+    $('updateversion-msg').innerHTML = "Message=" + this.responseText;
+
   };
   console.log("URL: " + URL + " Version: "+ version);
   //oReq.open('put', $('endpointURL').innerHTML, true);
   //oReq.send('version='+$('channelVersion').value);
   oReq.open('put', URL, true);
   oReq.send('version=' + version);
+  oReq.onerror = function() {
+    $('updateversion-msg').innerHTML = "Error putting a new version";
+  }
 };
 
 function updateVersion_noVersion() {
@@ -87,6 +91,10 @@ function updateVersion_noVersion() {
   };
   oReq.open('put', $('endpointURL').innerHTML, true);
   oReq.send('version=');
+
+  oReq.onerror = function() {
+    $('updateversion-msg').innerHTML = "Error putting a new version";
+  }
 };
 
 function updateVersion_wrongEndPoint() {

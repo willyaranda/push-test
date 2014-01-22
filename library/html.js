@@ -48,7 +48,7 @@ function generateMQJSON() {
 };
 
 function getSetup() {
-  c = navigator.push.getSetup();
+  var c = navigator.push.getSetup();
   $('setup_debug').checked = (c.debug === "true" || c.debug ? true : false);
   $('setup_host').value = c.host;
   $('setup_port').value = c.port;
